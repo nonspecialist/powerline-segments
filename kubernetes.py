@@ -11,6 +11,9 @@ _KUBE_SYMBOL = u'\U00002388 '
 ALERT_FG = 9
 ALERT_BG = 235
 
+SAFE_FG = 10
+SAFE_BG = 235
+
 NORMAL_FG = 69
 NORMAL_BG = 237
 
@@ -27,23 +30,35 @@ class Segment(BasicSegment):
         except:
             alert_clusters = []
 
+        try:
+            safe_clusters = os.getenv("K8S_SAFE_CLUSTERS").split(',')
+        except:
+            safe_clusters = []
+
         context = K8sConfig().current_context_dict
 
-        user = context.get('user')
-        seg = f'{_KUBE_SYMBOL}{user}@'
-        self.powerline.append(seg, NORMAL_FG, NORMAL_BG, separator='')
+        # user = context.get('user')
+        # seg = f'{_KUBE_SYMBOL}{user}@'
+        # seg = f'{_KUBE_SYMBOL}'
+        # self.powerline.append(seg, NORMAL_FG, NORMAL_BG, separator='')
 
         cluster = context.get('cluster')
-
-        if cluster in alert_clusters:
-            self.powerline.append(cluster, ALERT_FG, ALERT_BG)
-        else:
-            self.powerline.append(cluster, CLUSTER_FG, CLUSTER_BG)
-
         namespace = context.get('namespace')
         if not namespace:
             namespace = 'default'
 
-        seg = f'({namespace})'
-        self.powerline.append(seg, NORMAL_FG, NORMAL_BG)
+        ns = f'({namespace})'
+
+        if cluster in alert_clusters:
+            fg = ALERT_FG
+            bg = ALERT_BG
+        elif cluster in safe_clusters:
+            fg = SAFE_FG
+            bg = SAFE_BG
+        else:
+            fg = CLUSTER_FG
+            bg = CLUSTER_BG
+
+        self.powerline.append(cluster, fg, bg)
+        self.powerline.append(ns, fg, bg)
 
