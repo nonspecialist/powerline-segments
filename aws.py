@@ -16,6 +16,9 @@ CREDS_WARN_BG = 238
 CREDS_OK_FG = 118
 CREDS_OK_BG = 238
 
+WARN_SECONDS = 600
+EXPIRING_SECONDS = 120
+
 class Segment(BasicSegment):
     def add_to_powerline(self):
         aws_account_name = os.getenv('AWS_ACCOUNT_NAME')
@@ -44,9 +47,9 @@ class Segment(BasicSegment):
 
                     if remaining <= 0:
                         self.powerline.append(f'{hh}:{mm}', CREDS_EXPIRED_FG, CREDS_EXPIRED_BG)
-                    elif remaining <= 60:
+                    elif remaining <= EXPIRING_SECONDS:
                         self.powerline.append(f'{hh}:{mm}', CREDS_EXPIRING_FG, CREDS_EXPIRING_BG)
-                    elif remaining <= 300:
+                    elif remaining <= WARN_SECONDS:
                         self.powerline.append(f'{hh}:{mm}', CREDS_WARN_FG, CREDS_WARN_BG)
                     else:
                         self.powerline.append(f'{hh}:{mm}', CREDS_OK_FG, CREDS_OK_BG)
