@@ -46,7 +46,7 @@ class Segment(BasicSegment):
                     mm = '%02d' % int((remaining - (hours * 3600)) / 60)
 
                     if remaining <= 0:
-                        self.powerline.append(f'{hh}:{mm}', CREDS_EXPIRED_FG, CREDS_EXPIRED_BG)
+                        self.powerline.append(f'00:00', CREDS_EXPIRED_FG, CREDS_EXPIRED_BG)
                     elif remaining <= EXPIRING_SECONDS:
                         self.powerline.append(f'{hh}:{mm}', CREDS_EXPIRING_FG, CREDS_EXPIRING_BG)
                     elif remaining <= WARN_SECONDS:
